@@ -1,0 +1,32 @@
+Next generation algorithm advances machine learning of powerful supercomputers
+Nov 13, 2018 Research
+email
+facebook
+linkedin
+twitter
+
+A multi-disciplinary team of international researchers from KAUST and Japan’s National Institute of Informatics in collaboration with Cray Inc. implemented a new algorithm to harness the computational power of the fastest supercomputers in the world. File photo.
+
+By Alexander Buxton, KAUST News
+
+A multi-disciplinary team of international researchers from KAUST and Japan's National Institute of Informatics (NII) in collaboration with U.S. supercomputer company Cray Inc. successfully implemented a new algorithm to efficiently harness the computational power of the fastest supercomputers in the world.
+
+"Software integration is ultimately the icing on the cake for advanced computational projects. Thanks to Cray's support, our algorithms are now deployed on all Cray supercomputers, including KAUST's Shaheen II supercomputer, as well as half of the top 10 fastest supercomputers in the world," stated Dalal Sukkari, a Ph.D. student in the University's Extreme Computing Research Center (ECRC).
+
+The tectonic plates of the supercomputing world are shifting, with the scientific computing community at the dawn of the exascale age. Supercomputers will soon be capable of performing 10^18 floating-point operations per second using billions of processing units. This unprecedented rate of execution has motivated researchers to implement new algorithms that can effectively utilize the next generations of hardware to the fullest. The ECRC is working with a theoretical linear algebra expert from the National Institute of Informatics in Tokyo to develop high performance numerical algorithms for the current and next generation of supercomputers.
+
+Working with engineers from Cray, the researchers successfully unified their efforts to integrate new singular value decomposition (SVD) codes into Cray LibSci scientific libraries to support cutting-edge applications in machine learning and data de-noising.
+
+"The current hostile hardware environment—with its deteriorating imbalance between arithmetic capability and memory access—is creating challenges for computational scientists and algorithm designers," said David Keyes, ECRC director.
+
+Taking the new algorithm from a research paper to community mainstream dissemination for solving worldwide scientific problems required a range of skills from the multi-disciplinary team. KAUST was awarded the Cray Center of Excellence (CCOE) in 2015 in recognition of its effort toward making high performance computing accessible for all. Moreover, the mission of the CCOE is to advance in-house scientific applications on current and future generations of supercomputers while promoting an important exchange of expertise between KAUST scientists and Cray researchers. The CCOE has been an instrumental framework to facilitate the KAUST SVD software integration into Cray LibSci.
+
+"Increasingly, we find that hardware vendors, software designers and applications developers must collaborate closely to overcome technical challenges in a robust manner. In the KAUST-Cray Center of Excellence, we've been able to perfect this three-way collaborative process and to impact the community as a result," said Adrian Tate, director of Cray's EMEA Research Lab.
+
+The new algorithm introduces an iterative procedure based on fundamental work by Yegor Zolotarev in 1877 into a computational framework. The algorithm converges rapidly, although it requires three times more operations than the new state-of-the-art serial algorithm. These extra operations can be executed in a way that can extract new levels of computational power, therefore allowing for more parallel computations.
+
+The Zolotarev functions were introduced ahead of their time 140 years ago in rational approximation theory when digital computers did not exist. Until recently, they have been primarily of mathematical interest with limited practical use. They began resurfacing in numerical linear algebra and numerical analysis in the contexts of eigenvalue computation, matrix decompositions and analysis of low-rank matrices.
+
+"Exploiting its optimality under function composition—and the power of today's and future supercomputers—we are giving a new birth to Zolotarev iterations and we are able to outperform the currently deployed SVD algorithm," stated Professor Yuji Nakatsukasa from the National Institute of Informatics in Japan.
+
+Read more about the research here: H. Ltaief, D. Sukkari, A. Esposito, Y. Nakatsukasa and D. Keyes, Massively Parallel Polar Decomposition on Distributed-Memory Systems, submitted to IEEE Transactions on Parallel Computing TOPC.
