@@ -7,6 +7,7 @@ class Huffman:
         self.path = path
         self.heap = []
         self.code = {}
+        self.reverse ={}
     
     class HeapNode:
         def __init__(self,char,freq):
@@ -54,6 +55,7 @@ class Huffman:
            return
         if(root.char != None):
            self.code[root.char] = current_code
+           self.reverse[current_code] = root.char
            return
         
         self.tree_traversal(root.left, current_code + "0")
@@ -113,6 +115,55 @@ class Huffman:
         print("Đã nén")
         return output_path
 
+#Phần giải nén file
+    def remove_padding(self, pad_encoded_text): #Hàm loại bỏ phần bổ sung(bổ sung ở pad_encoded_text)
+        pad_info = pad_encoded_text[:8]
+        extra_padding = int(pad_info, 2)
+        pad_encoded_text = pad_encoded_text[8:]
+        encoded_text = pad_encoded_text[:-1*extra_padding]
+
+        return encoded_text
+    
+    def decode_text(self,encoded_text): #Hàm chuyển bit thành kí tự
+        current_code = ""
+        decoded_text = ""
+
+        for bit in encoded_text:
+            current_code += bit
+            if(current_code in self.reverse):
+                character = self.reverse[current_code]
+                decoded_text += character
+                current_code = ""
+
+        return decoded_text
+    
+    def decompress(self, input): #quá trình giải mã
+        filename, file_extension = os.path.splitext(self.path)
+        output_path = filename + "_decompressed" + ".txt"
+
+        with open(input, 'rb') as file, open(output_path, 'w') as output:
+            bit_string = ""
+
+            byte = file.read(1)
+            while(len(byte)>0):# Hàm để đọc từng byte và chai về 9 bit
+                byte = ord(byte)
+                bits = bin(byte)[2:].rjust(8,'0')
+                bit_string += bits
+                byte = file.read(1)
+
+            encoded_text = self.remove_padding(bit_string)
+
+            decompressed_text = self.decode_text(encoded_text)
+
+            output.write(decompressed_text)
+
+            print("Đã giải nén")
+            return output_path
+        
+
+        
+        
+    
 
        
         
