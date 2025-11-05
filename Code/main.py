@@ -2,8 +2,8 @@ from huffman import Huffman
 import sys
 
 path = "D:\\Project 1\\BTL\\Code\\example.txt"
-
-run = Huffman(path)
+path2 = "D:\\Project 1\\BTL\\Code\\example2.txt"
+run = Huffman(path2)
 
 output_path = run.compress()
 print("File da nen la " + output_path)

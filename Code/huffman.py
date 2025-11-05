@@ -97,7 +97,7 @@ class Huffman:
         filename,file_extension = os.path.splitext(self.path)
         output_path = filename + ".bin"
 
-        with open(self.path, 'r+') as file, open(output_path, 'wb') as output:
+        with open(self.path, 'r+',encoding='utf-8') as file, open(output_path, 'wb') as output:
             text = file.read()
             text = text.rstrip() #loại bỏ kí tự xuống dòng + khoảng trắng
 
@@ -141,7 +141,7 @@ class Huffman:
         filename, file_extension = os.path.splitext(self.path)
         output_path = filename + "_decompressed" + ".txt"
 
-        with open(input, 'rb') as file, open(output_path, 'w') as output:
+        with open(input, 'rb') as file, open(output_path, 'w', encoding='utf-8') as output:
             bit_string = ""
 
             byte = file.read(1)
