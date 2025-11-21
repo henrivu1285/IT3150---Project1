@@ -145,7 +145,7 @@ class Huffman:
             bit_string = ""
 
             byte = file.read(1)
-            while(len(byte)>0):# Hàm để đọc từng byte và chai về 9 bit
+            while(len(byte)>0):# Hàm để đọc từng byte và chia về 8 bit
                 byte = ord(byte)
                 bits = bin(byte)[2:].rjust(8,'0')
                 bit_string += bits
