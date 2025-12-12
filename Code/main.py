@@ -1,11 +1,12 @@
 import sys
 import os
-from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, 
-                               QPushButton, QLabel, QFileDialog, QMessageBox, QFrame)
+from PySide6.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout, QComboBox,
+                               QPushButton, QLabel, QFileDialog, QMessageBox, QFrame,QCheckBox)
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QIcon
 
 from huffman import Huffman
+from rle import RLE
 
 class HuffmanApp(QMainWindow):
     def __init__(self):
@@ -56,6 +57,13 @@ class HuffmanApp(QMainWindow):
         self.btn_browse.clicked.connect(self.browse_file)
         layout.addWidget(self.btn_browse)
 
+        lbl_algo = QLabel("Chọn thuật toán bổ trợ:")
+        layout.addWidget(lbl_algo)
+        
+        self.combo_algo = QComboBox()
+        self.combo_algo.addItems(["Chỉ dùng Huffman (Mặc định)", "Kết hợp RLE + Huffman", "Kết hợp LZ77 + Huffman"])
+        self.combo_algo.setStyleSheet("padding: 5px; font-size: 14px;")
+        layout.addWidget(self.combo_algo)
         # Khu vực nút hành động
         action_layout = QVBoxLayout()
         
@@ -115,7 +123,6 @@ class HuffmanApp(QMainWindow):
             self.process_file_selection(filename)
 
     def process_file_selection(self, filepath):
-        """Hàm trung gian để xử lý file dù là chọn hay kéo thả"""
         self.current_file_path = filepath
         display_name = os.path.basename(filepath)
         
@@ -130,11 +137,13 @@ class HuffmanApp(QMainWindow):
         if extension == '.txt':
             self.btn_compress.setEnabled(True)      # Bật nén
             self.btn_decompress.setEnabled(False)   # Tắt giải nén
+            self.combo_algo.setEnabled(True)
             self.lbl_instruction.setText(f"File: {display_name}\n(Sẵn sàng nén)")
             
         elif extension == '.bin':
             self.btn_compress.setEnabled(False)     # Tắt nén
             self.btn_decompress.setEnabled(True)    # Bật giải nén
+            self.combo_algo.setEnabled(False)
             self.lbl_instruction.setText(f"File: {display_name}\n(Sẵn sàng giải nén)")
             
         else:
@@ -146,8 +155,12 @@ class HuffmanApp(QMainWindow):
     def run_compress(self):
         if not self.current_file_path: return
         try:
+            index = self.combo_algo.currentIndex()
+            mode = "NORMAL"
+            if index == 1: mode = "RLE"
+            elif index == 2: mode = "LZ77"
             huff = Huffman(self.current_file_path)
-            output_path = huff.compress()
+            output_path = huff.compress(mode=mode)
             QMessageBox.information(self, "Thành công", f"Đã nén file thành công!\nFile lưu tại:\n{output_path}")
         except Exception as e:
             QMessageBox.critical(self, "Lỗi", f"Có lỗi xảy ra khi nén:\n{str(e)}")

@@ -1,5 +1,8 @@
 import heapq
 import os
+import pickle
+from rle import RLE
+from lz77 import LZ77
 
 #Phần mã hóa Huffman
 class Huffman:
@@ -93,13 +96,19 @@ class Huffman:
         
         return b
     
-    def compress(self):
+    def compress(self, mode="NORMAL"):
         filename,file_extension = os.path.splitext(self.path)
         output_path = filename + ".bin"
 
         with open(self.path, 'r+',encoding='utf-8') as file, open(output_path, 'wb') as output:
             text = file.read()
             text = text.rstrip() #loại bỏ kí tự xuống dòng + khoảng trắng
+            if mode == "RLE":
+
+                text = RLE.encode(text)
+            elif mode == "LZ77":
+                lz = LZ77()
+                text = lz.encode(text)
 
             frequency = self.make_frequency(text)
             self.make_node_heap(frequency)
@@ -110,6 +119,17 @@ class Huffman:
             pad_encoded_text = self.pad_encoded_text(encoded_text)
 
             b = self.byte_array(pad_encoded_text)
+            #Tạo Header chứa: Bảng tần suất + Cờ xác nhận có dùng RLE không
+            header_info = {
+                "freq": frequency,
+                "mode": mode
+            }
+            header_data = pickle.dumps(header_info)
+            
+            # Ghi độ dài header (4 byte) + header + dữ liệu nén
+            output.write(len(header_data).to_bytes(4, 'big'))
+            output.write(header_data)
+
             output.write(bytes(b))
 
         print("Đã nén")
@@ -120,7 +140,9 @@ class Huffman:
         pad_info = pad_encoded_text[:8]
         extra_padding = int(pad_info, 2)
         pad_encoded_text = pad_encoded_text[8:]
-        encoded_text = pad_encoded_text[:-1*extra_padding]
+        if extra_padding > 0:
+           encoded_text = pad_encoded_text[:-1*extra_padding]
+        else: encoded_text = pad_encoded_text
 
         return encoded_text
     
@@ -142,8 +164,27 @@ class Huffman:
         output_path = filename + "_decompressed" + ".txt"
 
         with open(input, 'rb') as file, open(output_path, 'w', encoding='utf-8') as output:
-            bit_string = ""
+            # 1. Đọc Header
+            header_len_data = file.read(4)
+            if not header_len_data: return ""
+            header_len = int.from_bytes(header_len_data, 'big')
+            
+            header_data = file.read(header_len)
+            header_info = pickle.loads(header_data)
+            
+            # Lấy thông tin từ header
+            frequency = header_info["freq"]
+            mode = header_info.get("mode", "NORMAL")
 
+            # Tái tạo cây Huffman
+            self.heap = []
+            self.code = {}
+            self.reverse = {}
+            self.make_node_heap(frequency)
+            self.merge_node()
+            self.code_generation()
+
+            bit_string = ""
             byte = file.read(1)
             while(len(byte)>0):# Hàm để đọc từng byte và chia về 8 bit
                 byte = ord(byte)
@@ -153,9 +194,17 @@ class Huffman:
 
             encoded_text = self.remove_padding(bit_string)
 
-            decompressed_text = self.decode_text(encoded_text)
+            decoded_text = self.decode_text(encoded_text) 
 
-            output.write(decompressed_text)
+            if mode == "RLE":
+                    print("Phát hiện RLE, đang giải mã...")
+                    decoded_text = RLE.decode(decoded_text)
+            elif mode == "LZ77":
+                    print("Phát hiện LZ77, đang giải mã...")
+                    lz = LZ77()
+                    decoded_text = lz.decode(decoded_text)
+
+            output.write(decoded_text)
 
             print("Đã giải nén")
             return output_path
